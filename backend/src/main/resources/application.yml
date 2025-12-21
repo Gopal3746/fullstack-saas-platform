@@ -17,3 +17,10 @@ spring:
 logging:
   level:
     org.springframework.security: INFO
+
+app:
+  jwt:
+    issuer: "jiralite"
+    accessTtlMinutes: 15
+    refreshTtlDays: 14
+    secret: "CHANGE_ME_TO_A_LONG_RANDOM_SECRET_32+_CHARS"
