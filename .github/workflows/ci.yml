@@ -10,6 +10,21 @@ jobs:
   backend:
     name: Backend (Gradle)
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+          POSTGRES_DB: jiralite
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U app -d jiralite"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     defaults:
       run:
         working-directory: backend
@@ -24,10 +39,15 @@ jobs:
           cache: gradle
 
       - name: Build & Test
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/jiralite
+          SPRING_DATASOURCE_USERNAME: app
+          SPRING_DATASOURCE_PASSWORD: app
         run: ./gradlew clean test
 
       - name: Check formatting
         run: ./gradlew spotlessCheck
+
 
   frontend:
     name: Frontend (pnpm)
